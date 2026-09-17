@@ -72,10 +72,8 @@ export function signOut() {
 
 // Fetch recent events from the API. The ID token goes in the Authorization
 // header so the API can tell who is asking.
-export async function fetchRealEvents(token) {
-  const res = await fetch(`${API_URL}/events?limit=50`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+export async function fetchRealEvents() {
+  const res = await fetch(`${API_URL}/events?limit=50`);
   if (!res.ok) throw new Error(`API returned ${res.status}`);
   const data = await res.json();
   return data.events || data;
