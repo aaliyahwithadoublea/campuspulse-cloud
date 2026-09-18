@@ -43,7 +43,7 @@ export default function DashboardView({ user, onLogout }) {
       }
     }
     tick();
-    const interval = setInterval(tick, USE_FAKE_DATA ? 1500 : 5000);
+    const interval = setInterval(tick, 2000);
     return () => {
       active = false;
       clearInterval(interval);
