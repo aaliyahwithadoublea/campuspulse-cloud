@@ -1,21 +1,35 @@
 import { SEV, TYPE_LABEL } from "../constants";
 import { describe, timeOf } from "../helpers";
 
-// Staff only. Students get the explanation rather than an empty box, so the
-// boundary is visible rather than mysterious.
 export default function AttentionPanel({ events, isStaff }) {
   if (!isStaff) {
+    const counts = events.reduce(
+      (summary, event) => ({ ...summary, [event.severity]: summary[event.severity] + 1 }),
+      { normal: 0, warning: 0, critical: 0 },
+    );
+
     return (
       <section>
         <header className="px-5 py-3 border-b border-[#D5DBE1]">
-          <h2 className="text-[13px] font-medium text-[#16202A]">Needs attention</h2>
+          <h2 className="text-[13px] font-medium text-[#16202A]">Campus snapshot</h2>
         </header>
-        <div className="px-5 py-8">
-          <p className="text-[13px] text-[#16202A]">Restricted to operations staff.</p>
-          <p className="mt-1.5 text-[12.5px] text-[#5A6B7A] leading-relaxed">
-            Your account has the student role, which can read readings and totals
-            but not the escalation list.
-          </p>
+        <div className="grid grid-cols-2 gap-px bg-[#D5DBE1]">
+          <div className="bg-white px-5 py-5">
+            <p className="font-mono text-[24px] text-[#16202A]">{events.length}</p>
+            <p className="mt-1 text-[12px] text-[#5A6B7A]">readings received</p>
+          </div>
+          <div className="bg-white px-5 py-5">
+            <p className="font-mono text-[24px] text-[#2E7D5B]">{counts.normal}</p>
+            <p className="mt-1 text-[12px] text-[#5A6B7A]">within range</p>
+          </div>
+          <div className="bg-white px-5 py-5">
+            <p className="font-mono text-[24px] text-[#B67A12]">{counts.warning}</p>
+            <p className="mt-1 text-[12px] text-[#5A6B7A]">warnings</p>
+          </div>
+          <div className="bg-white px-5 py-5">
+            <p className="font-mono text-[24px] text-[#B3322C]">{counts.critical}</p>
+            <p className="mt-1 text-[12px] text-[#5A6B7A]">critical</p>
+          </div>
         </div>
       </section>
     );
