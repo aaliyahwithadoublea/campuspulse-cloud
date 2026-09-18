@@ -36,14 +36,14 @@ from datetime import datetime, timezone
 # ---------------------------------------------------------------------------
 
 # False = print events to the screen. True = send them to your API.
-SEND_TO_API = False
+SEND_TO_API = True
 
 # Your API's POST /events URL. You won't have this until the API is built.
 # Example once it exists: "https://abc123.execute-api.us-east-1.amazonaws.com/events"
-API_URL = "PASTE_YOUR_API_URL_HERE"
+API_URL = "https://om9pvx9xrd.execute-api.eu-north-1.amazonaws.com/prod/events"
 
 # The secret key the API checks to know the sensor is allowed. Placeholder for now.
-API_KEY = "PASTE_YOUR_API_KEY_HERE"
+API_KEY = ""
 
 # How many seconds to wait between events. 2 is a good default.
 SECONDS_BETWEEN_EVENTS = 2

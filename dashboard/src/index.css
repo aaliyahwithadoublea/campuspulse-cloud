@@ -1,1 +1,33 @@
+/* IBM Plex reads as technical infrastructure rather than a startup default.
+   The fallback stack keeps the layout intact if the webfont does not load.
+   This @import must stay above the Tailwind one: CSS requires @import rules
+   to precede everything else. */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
 @import "tailwindcss";
+
+:root {
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-mono,
+code,
+time {
+  font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Quiet scrollbars inside the feed panels */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-thumb { background: #D5DBE1; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

@@ -1,9 +1,6 @@
 import { useState } from "react";
-import { Activity, Lock } from "lucide-react";
 import { signIn } from "../api";
 
-// The sign-in screen. Calls Cognito via signIn(), and on success hands the
-// user up to App.
 export default function LoginScreen({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,8 +11,7 @@ export default function LoginScreen({ onLogin }) {
     setBusy(true);
     setError(null);
     try {
-      const user = await signIn(email, password);
-      onLogin(user);
+      onLogin(await signIn(email, password));
     } catch (e) {
       setError(e.message);
     } finally {
@@ -23,60 +19,90 @@ export default function LoginScreen({ onLogin }) {
     }
   }
 
+  const field =
+    "w-full bg-white border border-[#D5DBE1] focus:border-[#16202A] focus:outline-none " +
+    "px-3 py-2.5 text-[13.5px] text-[#16202A] placeholder:text-[#98A4AF]";
+
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900 font-sans flex items-center justify-center p-6">
-      <div className="w-full max-w-sm">
-        <div className="flex items-center gap-2.5 mb-8">
-          <div className="h-9 w-9 rounded-md bg-indigo-600 flex items-center justify-center">
-            <Activity className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <div className="text-lg font-semibold text-neutral-900 leading-tight">CampusPulse</div>
-            <div className="text-xs text-neutral-500">NorthBridge University · operations</div>
-          </div>
+    <div className="min-h-screen bg-[#EEF1F4] text-[#16202A] grid lg:grid-cols-2">
+      {/* Left: what this is, stated plainly rather than sold */}
+      <div className="hidden lg:flex flex-col justify-between bg-[#16202A] text-white px-12 py-12">
+        <span className="text-[15px] font-semibold tracking-tight">CampusPulse</span>
+
+        <div>
+          <p className="text-[27px] leading-[1.25] tracking-tight max-w-[15ch]">
+            Five buildings, one operations board.
+          </p>
+          <p className="mt-5 text-[13.5px] text-[#9FB0BF] leading-relaxed max-w-[42ch]">
+            Occupancy, energy, environment and reported faults arrive together,
+            scored as they land, so the operations team sees a problem while it
+            is still small.
+          </p>
         </div>
 
-        <div className="rounded-xl bg-white border border-neutral-200 p-6">
-          <div className="flex items-center gap-2 text-neutral-700 mb-5">
-            <Lock className="w-4 h-4" />
-            <span className="text-sm font-medium">Sign in to continue</span>
+        <div className="flex gap-6 font-mono text-[11px] text-[#7C8FA0]">
+          <span className="flex items-center gap-2"><i className="h-2 w-2 bg-[#2E7D5B] not-italic" />normal</span>
+          <span className="flex items-center gap-2"><i className="h-2 w-2 bg-[#B67A12] not-italic" />warning</span>
+          <span className="flex items-center gap-2"><i className="h-2 w-2 bg-[#B3322C] not-italic" />critical</span>
+        </div>
+      </div>
+
+      {/* Right: the form */}
+      <div className="flex items-center justify-center px-6 py-16">
+        <div className="w-full max-w-[350px]">
+          <h1 className="text-[20px] font-semibold tracking-tight">Sign in</h1>
+          <p className="mt-1.5 text-[13px] text-[#5A6B7A]">
+            Use your campus account.
+          </p>
+
+          <div className="mt-8">
+            <label htmlFor="email" className="block text-[12.5px] text-[#5A6B7A] mb-1.5">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && submit()}
+              placeholder="you@northbridge.edu"
+              className={field}
+            />
           </div>
 
-          <label className="block text-xs text-neutral-500 mb-1">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && submit()}
-            placeholder="you@northbridge.edu"
-            className="w-full rounded-lg bg-white border border-neutral-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none px-3 py-2 text-sm text-neutral-900 mb-4"
-          />
+          <div className="mt-4">
+            <label htmlFor="password" className="block text-[12.5px] text-[#5A6B7A] mb-1.5">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && submit()}
+              placeholder="••••••••"
+              className={field}
+            />
+          </div>
 
-          <label className="block text-xs text-neutral-500 mb-1">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && submit()}
-            placeholder="password"
-            className="w-full rounded-lg bg-white border border-neutral-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none px-3 py-2 text-sm text-neutral-900 mb-4"
-          />
-
-          {error && <div className="text-sm text-rose-600 mb-3">{error}</div>}
+          {error && (
+            <p className="mt-4 border-l-2 border-[#B3322C] pl-3 text-[13px] text-[#8E2722]">
+              {error}
+            </p>
+          )}
 
           <button
             onClick={submit}
             disabled={busy}
-            className="w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-medium text-sm py-2.5 transition-colors"
+            className="mt-6 w-full bg-[#16202A] hover:bg-[#233140] disabled:opacity-40
+                       text-white text-[13.5px] font-medium py-2.5 transition-colors"
           >
-            {busy ? "Signing in…" : "Sign in"}
+            {busy ? "Signing in" : "Sign in"}
           </button>
 
-          <div className="mt-5 pt-4 border-t border-neutral-200">
-            <div className="text-xs text-neutral-500">
-              Accounts are provisioned by the university. Contact campus IT for access.
-            </div>
-          </div>
+          <p className="mt-6 pt-5 border-t border-[#D5DBE1] text-[12.5px] text-[#5A6B7A] leading-relaxed">
+            Accounts are created by campus IT. There is no public sign-up.
+          </p>
         </div>
       </div>
     </div>

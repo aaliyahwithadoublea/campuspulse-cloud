@@ -1,12 +1,9 @@
-import { Users, Zap, Thermometer, Wrench } from "lucide-react";
+// Fixed campus data and the visual language for severity.
+//
+// Colour is reserved entirely for severity. Nothing else in the interface is
+// coloured, so a red square on the board always means the same thing.
 
-export const BUILDINGS = [
-  "Library-A",
-  "Science-B",
-  "Engineering-C",
-  "Admin-D",
-  "Sports-E",
-];
+export const BUILDINGS = ["Library-A", "Science-B", "Engineering-C", "Admin-D", "Sports-E"];
 
 export const ROOMS = ["101", "203", "A203", "C110", "D004", "Lab-1", "Hall-2"];
 
@@ -18,29 +15,24 @@ export const REQUESTS = [
   "Wifi down in the whole wing",
 ];
 
-// Label and icon for each event type, used across the dashboard.
-export const TYPE_META = {
-  occupancy: { label: "Occupancy", icon: Users },
-  energy: { label: "Energy", icon: Zap },
-  environment: { label: "Environment", icon: Thermometer },
-  request: { label: "Requests", icon: Wrench },
+// Short labels; the reading itself carries the detail.
+export const TYPE_LABEL = {
+  occupancy: "Occupancy",
+  energy: "Energy",
+  environment: "Environment",
+  request: "Request",
 };
 
-// Muted status colours that read on a white background.
 export const SEV = {
-  normal: {
-    dot: "bg-emerald-500",
-    text: "text-emerald-700",
-    chip: "bg-emerald-50 text-emerald-700",
-  },
-  warning: {
-    dot: "bg-amber-500",
-    text: "text-amber-700",
-    chip: "bg-amber-50 text-amber-700",
-  },
-  critical: {
-    dot: "bg-rose-500",
-    text: "text-rose-700",
-    chip: "bg-rose-50 text-rose-700",
-  },
+  normal:   { label: "Normal",   swatch: "bg-[#2E7D5B]", text: "text-[#2E7D5B]", wash: "bg-[#EAF3EE]", rank: 0 },
+  warning:  { label: "Warning",  swatch: "bg-[#B67A12]", text: "text-[#8A5C0D]", wash: "bg-[#FBF2E1]", rank: 1 },
+  critical: { label: "Critical", swatch: "bg-[#B3322C]", text: "text-[#8E2722]", wash: "bg-[#FAEAE9]", rank: 2 },
 };
+
+// Worst severity wins when summarising a building.
+export function worstOf(events) {
+  return events.reduce((worst, e) => {
+    const r = SEV[e.severity]?.rank ?? 0;
+    return r > (SEV[worst]?.rank ?? 0) ? e.severity : worst;
+  }, "normal");
+}
